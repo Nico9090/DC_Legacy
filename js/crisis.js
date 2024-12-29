@@ -77,3 +77,4 @@ function init() {
 
 // Start the game
 init();
+// FROM CHATGPT

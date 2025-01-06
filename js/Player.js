@@ -1,5 +1,7 @@
 class Player{
-    constructor(x,y,width,height,image_src,ctx){ //want to draw player character somewhere
+    constructor(x,y,width,height,image_src,ctx,
+        frameWidth,frameHeight,framesPerDirection
+    ){ //want to draw player character somewhere
         this.image=new Image(); // needs to be called whenever you are loading a new image
         this.x=x;
         this.y=y;
@@ -13,6 +15,16 @@ class Player{
         this.image.onload = () => {
             this.isImageLoaded = true; // Once image is loaded, update the flag
         };
+
+        this.frameWidth=frameWidth;
+        this.frameHeight=frameHeight;
+        this.framesPerDirection=framesPerDirection;
+        this.currentFrame=0;
+        this.frameInterval=6;
+        this.frameCount=0;
+
+        this.direction='down';
+
     }
 
     key_listener(){
@@ -39,11 +51,36 @@ class Player{
             this.x += this.speed; // Move right
         } //FROM CHATGPT
     }
+
+    updateAnimation(){
+        if (this.frameCount % this.frameInterval === 0){
+            this.currentFrame = (this.currentFrame+1)%this.framesPerDirection;
+        }
+        this.frameCount++;
+    }
     draw(){ //must load before drawing
         if (!this.isImageLoaded) return;
+
         this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        
+        let frameX=this.currentFrame*this.frameWidth;
+        let frameY=0;
+
+        if (this.direction === 'up'){
+            frameY=this.frameHeight*1;
+        } else if (this.direction==='down'){
+            frameY=this.frameHeight*0;
+        } else if (this.direction === 'left'){
+            frameY= this.frameHeight*2;
+        } else if (this.direction==='right'){
+            frameY=this.frameHeight*3;
+        }
+    
+        
+            
         this.ctx.drawImage(this.image,this.x,this.y,this.width,this.height);
         this.move();
+        this.updateAnimation()
     
     }
 
